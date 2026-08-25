@@ -1,0 +1,5 @@
+_temp_asar/
+*.bak
+*.log
+node_modules/
+.DS_Store
