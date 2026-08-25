@@ -7,12 +7,13 @@ echo ==================================================
 echo   Antigravity 软件自动更新后 - 一键重新汉化修复
 echo ==================================================
 echo.
-echo [原理说明] 
-echo Antigravity 自动升级新版本时，Electron 会下载官方最新 app.asar，
-echo 这会将之前的汉化覆盖还原为英文。
-echo 此时无需惊慌，只需关闭软件后运行本脚本，3秒即可重新完成汉化！
-echo.
+echo [1/3] 正在全自动关闭 Antigravity 运行进程以解除文件锁定...
+taskkill /F /IM Antigravity.exe /T >nul 2>nul
+taskkill /F /IM antigravity.exe /T >nul 2>nul
+taskkill /F /IM language_server.exe /T >nul 2>nul
+timeout /t 1 /nobreak >nul
 
+echo [2/3] 正在重新注入最新版本的中文汉化补丁...
 node "%~dp0scripts\localization_engine.js" --brand-title translated %*
 
 if %errorlevel% neq 0 (
@@ -27,7 +28,13 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [✓ 成功] 已为您无缝完成最新版本的中文汉化重新注入！
-echo 重新打开软件即可继续享用中文界面。
+echo ==================================================
+echo [3/3] 修复成功！正在为您自动重新启动全中文界面 Antigravity...
+echo ==================================================
 echo.
-timeout /t 5
+
+if exist "C:\Users\1\AppData\Local\Programs\antigravity\Antigravity.exe" (
+    start "" "C:\Users\1\AppData\Local\Programs\antigravity\Antigravity.exe"
+)
+
+timeout /t 3

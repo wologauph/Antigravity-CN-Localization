@@ -480,18 +480,20 @@ function checkIfAppIsRunning() {
 }
 
 function closeAntigravityProcesses() {
-    console.log("[1] 检测到 Antigravity 客户端正在运行，正在关闭以解除文件锁...");
-    try {
-        if (process.platform === 'win32') {
-            child_process.execSync('taskkill /f /im Antigravity.exe /t >nul 2>nul');
-        } else {
-            child_process.execSync('pkill -f Antigravity >/dev/null 2>&1');
+    console.log("[1] 检测到 Antigravity 客户端或相关后台服务正在运行，正在彻底关闭以解除文件锁定...");
+    if (process.platform === 'win32') {
+        const targets = ['Antigravity.exe', 'antigravity.exe', 'language_server.exe', 'antigravity_tools.exe'];
+        for (const target of targets) {
+            try {
+                child_process.execSync(`taskkill /F /IM ${target} /T >nul 2>nul`);
+            } catch (e) {}
         }
-    } catch (e) {
-        // ignore
+        runCommandSync('timeout /t 1 /nobreak >nul');
+    } else if (process.platform === 'darwin') {
+        try {
+            child_process.execSync('pkill -9 -f Antigravity >/dev/null 2>&1');
+        } catch (e) {}
     }
-    const start = Date.now();
-    while (Date.now() - start < 1500) {}
 }
 
 function detectInstallationDir(manualDir) {
