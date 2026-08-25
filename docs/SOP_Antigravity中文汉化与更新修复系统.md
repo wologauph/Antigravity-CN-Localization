@@ -11,27 +11,29 @@ tags: [Antigravity, 汉化, i18n, 自动更新修复, SOP]
 
 ---
 
-## 🛠️ 一、 汉化原理与更新覆盖真相
+## 🛠️ 一、 核心脚本使用场景精准界定（主人必看）
 
-1. **注入原理**：
-   Antigravity 基于 Electron 架构。汉化引擎利用 `@electron/asar` 解包 `resources/app.asar`，将 770+ 精准翻译字典注入 workbench 视图及菜单层，随后打包回 `app.asar`。
-2. **为什么自动更新后会恢复英文？**
-   Antigravity 官方在发布新版本时，后台更新程序会自动从 Google Cloud 节点下载最新的 `app.asar` 并覆盖本地文件。这一操作会自然替换掉注入了汉化代码的旧文件。
-3. **自愈方案**：
-   汉化包保留了完整的字典与引擎。一旦官方更新导致跳回英文，只需在关闭软件后双击 **`🔄 软件更新后一键修复汉化.bat`**，即可 3 秒内自动完成最新版本的重新注入！
+为防止混淆，两个核心批处理脚本的适用场景界定如下：
+
+1. **`🚀 对应版本一键安装中文汉化.bat`**：
+   - **适用场景**：**【第一次安装 / 全新汉化】**。
+   - 当您第一天使用汉化包、或者之前手动还原成了官方英文界面，现在想全新完成汉化时使用。
+   - **使用流程**：手动关闭 Antigravity ➔ 双击此脚本 ➔ 重新打开软件即完成汉化。
+
+2. **`🔄 软件更新后一键修复汉化.bat`**：
+   - **适用场景**：**【软件后台自动升级导致跳回英文后】**。
+   - 当未来的某一天，Antigravity 官方发布了新版本、后台静默更新后导致界面突然变回英文时使用。
+   - **底层原理**：Antigravity 是 Electron 软件，官方每次静默升级都会从云端下载全新的 `app.asar` 覆盖本地文件。这会冲掉原有的汉化代码。
+   - **自愈流程**：无需重新配置或修改任何参数，手动关闭 Antigravity ➔ 双击此脚本 ➔ **3秒内自动识别最新版本的 app.asar 并无缝重新完成汉化注入**！
+
+3. **`🛑 卸载还原官方英文.bat`**：
+   - **适用场景**：**【需要恢复官方原始英文界面时】**。
 
 ---
 
-## 🚀 二、 极简部署与使用手册
+## 📂 二、 本地与云端资产备份位置
 
-- **首次安装**：先关闭 Antigravity，双击 `🚀 对应版本一键安装中文汉化.bat`。
-- **版本更新后修复**：双击 `🔄 软件更新后一键修复汉化.bat`。
-- **还原官方英文**：双击 `🛑 卸载还原官方英文.bat`。
-
----
-
-## 📂 三、 关联资产与路径
-
-- **本地项目路径**：`C:\Users\1\Desktop\我的软件\Antigravity-CN-Localization`
-- **玉简存档备份**：`D:\小插件自己制作有用的放着\antigravity汉化包`
-- **GitHub 开源仓库**：[wologauph/Antigravity-CN-Localization](https://github.com/wologauph/Antigravity-CN-Localization)
+- **本地桌面工具目录**：`C:\Users\1\Desktop\我的软件\Antigravity-CN-Localization`
+- **D 盘源码备份目录**：`D:\小插件自己制作有用的放着\antigravity汉化包`
+- **玉简 SOP 路径**：`04_法宝库与自动化管家/01_软件与工具SOP/SOP_Antigravity中文汉化与更新修复系统.md`
+- **GitHub 远程仓库**：[wologauph/Antigravity-CN-Localization](https://github.com/wologauph/Antigravity-CN-Localization)
