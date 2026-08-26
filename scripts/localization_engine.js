@@ -553,7 +553,7 @@ function install20(resourcesDir) {
     }
 
     // 1. 备份
-    if (!fs.existsSync(bakPath)) {
+    if (!fs.existsSync(bakPath) || (fs.existsSync(bakPath) && fs.statSync(bakPath).size < 15000000)) {
         console.log(`[备份] 正在创建官方原始包备份: app.asar.bak ...`);
         fs.copyFileSync(asarPath, bakPath);
         console.log(`[备份] 备份成功！`);
@@ -595,7 +595,15 @@ function install20(resourcesDir) {
     // 清理已有的汉化，重新注入
     const cleanedContent = cleanJsContent(content);
     const translationJs = generateJs();
-    const newContent = cleanedContent + "\n" + translationJs;
+    const webFrameJs = `
+try {
+    const { webFrame } = require('electron');
+    webFrame.executeJavaScript(${JSON.stringify(translationJs)});
+} catch (e) {
+    console.error("[HanHua] webFrame injection failed:", e);
+}
+`;
+const newContent = cleanedContent + "\n" + webFrameJs;
 
     fs.writeFileSync(preloadPath, newContent, 'utf-8');
     console.log(`[修改] 注入成功！`);
@@ -807,7 +815,7 @@ function restore20(resourcesDir) {
     const asarPath = path.join(resourcesDir, "app.asar");
     const bakPath = path.join(resourcesDir, "app.asar.bak");
 
-    if (!fs.existsSync(bakPath)) {
+    if (!fs.existsSync(bakPath) || (fs.existsSync(bakPath) && fs.statSync(bakPath).size < 15000000)) {
         console.log("[!] 未找到备份文件 app.asar.bak，可能尚未安装过汉化或备份被删除。");
         return false;
     }
