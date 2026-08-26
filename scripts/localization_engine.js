@@ -2,6 +2,105 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
+function extractAsarNative(asarPath, destDir) {
+    const fd = fs.openSync(asarPath, 'r');
+    const headerBuf = Buffer.alloc(16);
+    fs.readSync(fd, headerBuf, 0, 16, 0);
+    
+    const jsonLen = headerBuf.readUInt32LE(12);
+    const jsonBuf = Buffer.alloc(jsonLen);
+    fs.readSync(fd, jsonBuf, 0, jsonLen, 16);
+    
+    const header = JSON.parse(jsonBuf.toString('utf-8'));
+    const baseOffset = 16 + jsonLen;
+    
+    function extractNode(node, currentPath) {
+        if (node.files) {
+            fs.mkdirSync(currentPath, { recursive: true });
+            for (const [name, child] of Object.entries(node.files)) {
+                extractNode(child, path.join(currentPath, name));
+            }
+        } else {
+            const offset = parseInt(node.offset, 10);
+            const size = parseInt(node.size, 10);
+            const fileBuf = Buffer.alloc(size);
+            fs.readSync(fd, fileBuf, 0, size, baseOffset + offset);
+            fs.mkdirSync(path.dirname(currentPath), { recursive: true });
+            fs.writeFileSync(currentPath, fileBuf);
+        }
+    }
+    
+    extractNode(header, destDir);
+    fs.closeSync(fd);
+    return true;
+}
+
+function packAsarNative(srcDir, outAsarPath) {
+    let currentOffset = 0;
+    const filesToPack = [];
+    
+    function buildTree(dirPath) {
+        const node = { files: {} };
+        const items = fs.readdirSync(dirPath).sort();
+        for (const item of items) {
+            const fullPath = path.join(dirPath, item);
+            const stat = fs.statSync(fullPath);
+            if (stat.isDirectory()) {
+                node.files[item] = buildTree(fullPath);
+            } else {
+                node.files[item] = {
+                    size: stat.size,
+                    offset: String(currentOffset)
+                };
+                filesToPack.push({ path: fullPath, size: stat.size });
+                currentOffset += stat.size;
+            }
+        }
+        return node;
+    }
+    
+    const header = buildTree(srcDir);
+    const headerJson = Buffer.from(JSON.stringify(header), 'utf-8');
+    const jsonLen = headerJson.length;
+    
+    const paddingLen = (4 - (jsonLen % 4)) % 4;
+    const totalJsonLen = jsonLen + paddingLen;
+    const paddedJson = Buffer.alloc(totalJsonLen);
+    headerJson.copy(paddedJson, 0);
+    
+    const headerData = Buffer.alloc(16 + totalJsonLen);
+    headerData.writeUInt32LE(4, 0);
+    headerData.writeUInt32LE(totalJsonLen + 8, 4);
+    headerData.writeUInt32LE(totalJsonLen + 4, 8);
+    headerData.writeUInt32LE(totalJsonLen, 12);
+    paddedJson.copy(headerData, 16);
+    
+    const tempOut = outAsarPath + '.tmp';
+    const outFd = fs.openSync(tempOut, 'w');
+    fs.writeSync(outFd, headerData);
+    
+    const chunkSize = 1024 * 1024 * 4;
+    const buf = Buffer.alloc(chunkSize);
+    for (const f of filesToPack) {
+        const inFd = fs.openSync(f.path, 'r');
+        let bytesRead = 0;
+        let pos = 0;
+        while ((bytesRead = fs.readSync(inFd, buf, 0, chunkSize, pos)) > 0) {
+            fs.writeSync(outFd, buf, 0, bytesRead);
+            pos += bytesRead;
+        }
+        fs.closeSync(inFd);
+    }
+    fs.closeSync(outFd);
+    
+    if (fs.existsSync(outAsarPath)) {
+        try { fs.unlinkSync(outAsarPath); } catch (e) {}
+    }
+    fs.renameSync(tempOut, outAsarPath);
+    return true;
+}
+
+
 // --tw 參數：使用繁體中文字典 (dicts_tw/)，否則使用預設簡體字典 (dicts/)
 const USE_TW = process.argv.includes('--tw');
 const DICTS_FOLDER = USE_TW ? 'dicts_tw' : 'dicts';
@@ -651,8 +750,13 @@ function install20(resourcesDir) {
     }
 
     console.log(`[解包] 正在使用 npx 提取 app.asar...`);
-    const extractRes = runCommandSync(`npx -y @electron/asar extract "${asarPath}" "${tempDir}"`);
-    if (!extractRes.success || !fs.existsSync(tempDir)) {
+    try {
+        extractAsarNative(asarPath, tempDir);
+    } catch (e) {
+        console.error(`[错误] 原生解包失败: ${e.message}`);
+        return false;
+    }
+    if (!fs.existsSync(tempDir)) {
         console.error(`[错误] 解包失败，可能是由于系统未安装 Node.js/npm 或者网络限制。`);
         console.error(`详情: ${extractRes.stderr}\n${extractRes.stdout}`);
         return false;
