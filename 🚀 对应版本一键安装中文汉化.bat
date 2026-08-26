@@ -7,13 +7,9 @@ echo ==================================================
 echo   Antigravity 终极精译中文汉化补丁 (全自动版)
 echo ==================================================
 echo.
-echo [1/3] 正在全自动关闭 Antigravity 运行进程与后台服务以解除文件锁定...
-taskkill /F /IM Antigravity.exe /T >nul 2>nul
-taskkill /F /IM antigravity.exe /T >nul 2>nul
-taskkill /F /IM language_server.exe /T >nul 2>nul
-timeout /t 1 /nobreak >nul
+echo [提示] 替换底层 app.asar 前，请先保存工作并手动关闭 Antigravity 界面。
+echo.
 
-echo [2/3] 正在执行全自动中文汉化补丁注入...
 node "%~dp0scripts\localization_engine.js" --brand-title translated %*
 
 if %errorlevel% neq 0 (
@@ -22,14 +18,14 @@ if %errorlevel% neq 0 (
 
 if %errorlevel% neq 0 (
     echo.
-    echo [错误] 汉化注入失败！请重试或检查文件是否损坏。
+    echo [错误] 汉化注入失败! 请检查软件是否已完全退出。
     pause
     exit /b 1
 )
 
 echo.
 echo ==================================================
-echo [3/3] 汉化注入成功！正在为您自动启动全中文界面 Antigravity...
+echo [成功] 汉化注入完成! 正在为您重新打开全中文界面 Antigravity...
 echo ==================================================
 echo.
 

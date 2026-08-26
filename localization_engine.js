@@ -32,85 +32,6 @@ function getOptionValue(name, defaultValue) {
 
 const BRAND_TITLE_MODE = BRAND_TITLE_ALIASES[String(getOptionValue('--brand-title', 'english')).toLowerCase()] || 'english';
 
-if (USE_TW) {
-    const logTranslations = {
-        "====== 正在安装 Antigravity 中文汉化 ======": "====== 正在安裝 Antigravity 繁體中文漢化 ======",
-        "====== 正在卸载中文汉化，恢复官方原版 ======": "====== 正在卸載中文漢化，恢復官方原版 ======",
-        "====== 检测到 Antigravity 1.0 架构，正在使用 HTML 注入引擎 ======": "====== 偵測到 Antigravity 1.0 架構，正在使用 HTML 注入引擎 ======",
-        "====== 正在恢复 Antigravity 1.0 官方原版 ======": "====== 正在恢復 Antigravity 1.0 官方原版 ======",
-        "[1] 检测到 Antigravity 客户端正在运行，正在关闭以解除文件锁...": "[1] 偵測到 Antigravity 用戶端正在執行，正在關閉以解除檔案鎖...",
-        "[1] 正在关闭 Antigravity 运行进程以解除文件锁...": "[1] 正在關閉 Antigravity 執行進程以解除檔案鎖...",
-        "[备份] 正在创建官方原始包备份: app.asar.bak ...": "[備份] 正在建立官方原始包備份: app.asar.bak ...",
-        "[备份] 备份成功！": "[備份] 備份成功！",
-        "[备份] 已创建旧版 HTML 备份: ": "[備份] 已建立舊版 HTML 備份: ",
-        "[解包] 正在使用 npx 提取 app.asar...": "[解包] 正在使用 npx 提取 app.asar...",
-        "[修改] 正在向 preload.js 注入汉化代码...": "[修改] 正在向 preload.js 注入漢化程式碼...",
-        "[修改] 注入成功！": "[修改] 注入成功！",
-        "[修改] 正在向 menu.js 注入菜单汉化代码...": "[修改] 正在向 menu.js 注入選單漢化程式碼...",
-        "[修改] 菜单汉化注入成功！": "[修改] 選單漢化注入成功！",
-        "[修改] 正在向 tray.js 注入任务栏菜单汉化...": "[修改] 正在向 tray.js 注入系統匣選單漢化...",
-        "[修改] 任务栏菜单汉化注入成功！": "[修改] 系統匣選單漢化注入成功！",
-        "[修改] 正在向 loadingOverlay.js 注入加载页汉化...": "[修改] 正在向 loadingOverlay.js 注入載入頁漢化...",
-        "[修改] 加载页汉化注入成功！": "[修改] 載入頁漢化注入成功！",
-        "[修改] 正在向 updater.js 注入更新弹窗汉化...": "[修改] 正在向 updater.js 注入更新彈出視窗漢化...",
-        "[修改] 更新弹窗汉化注入成功！": "[修改] 更新彈出視窗漢化注入成功！",
-        "[打包] 正在将修改后的内容打包回 app.asar...": "[打包] 正在將修改後的內容打包回 app.asar...",
-        "[√] Antigravity 2.0 汉化部署完成！": "[√] Antigravity 2.0 漢化部署完成！",
-        "[√] Antigravity 1.0 汉化部署完成！": "[√] Antigravity 1.0 漢化部署完成！",
-        "[!] 未找到备份文件 app.asar.bak，可能尚未安装过汉化或备份被删除。": "[!] 未找到備份檔案 app.asar.bak，可能尚未安裝過漢化或備份已被刪除。",
-        "[还原] 正在用官方备份文件恢复...": "[還原] 正在用官方備份檔案恢復...",
-        "[还原] 已重置当前 app.asar 为官方原始备份包，以进行全新注入...": "[還原] 已重置目前 app.asar 為官方原始備份包，以進行全新注入...",
-        "[提示] 当前 app.asar 被锁定（可能是客户端正在运行），将使用当前包进行增量注入。": "[提示] 目前 app.asar 被鎖定（可能是用戶端正在執行），將使用目前包進行增量注入。",
-        "[还原] 已恢复 HTML: ": "[還原] 已恢復 HTML: ",
-        "[还原] 已删除汉化脚本": "[還原] 已刪除漢化指令碼",
-        "[√] 官方 app.asar 已成功恢复！": "[√] 官方 app.asar 已成功恢復！",
-        "[√] 校验值已同步，1.0 软件恢复至原始状态。": "[√] 校驗值已同步，1.0 軟體恢復至原始狀態。",
-        "[错误] 手动指定的路径不存在:": "[錯誤] 手動指定的路徑不存在:",
-        "[错误] 未在资源目录中找到 app.asar:": "[錯誤] 未在資源目錄中找到 app.asar:",
-        "[错误] 解压后未能在指定路径找到 preload.js:": "[錯誤] 解壓後未能在指定路徑找到 preload.js:",
-        "[错误] 无法定位有效的资源(resources)目录:": "[錯誤] 無法定位有效的資源(resources)目錄:",
-        "[错误] 无法定位有效的资源(resources)目录: ": "[錯誤] 無法定位有效的資源(resources)目錄: ",
-        "[错误] 解包失败，可能是由于系统未安装 Node.js/npm 或者网络限制。": "[錯誤] 解包失敗，可能是由於系統未安裝 Node.js/npm 或者網路限制。",
-        "[错误] 打包失败。": "[錯誤] 打包失敗。",
-        "[警告] 未能在 menu.js 中找到设定的插入点。": "[警告] 未能在 menu.js 中找到設定的插入點。",
-        "[签名] 检测到 macOS 平台，正在对应用包进行本地 ad-hoc 深度重签名: ": "[簽名] 偵測到 macOS 平台，正在對應用程式包進行本機 ad-hoc 深度重新簽名: ",
-        "[签名] 重新签名成功！": "[簽名] 重新簽名成功！",
-        "[警告] 重新签名失败。可能会导致应用无法打开。": "[警告] 重新簽名失敗。可能會導致應用程式無法開啟。",
-        "[警告] 未能从路径 ": "[警告] 未能從路徑 ",
-        " 识别到有效的 .app 路径，跳过重新签名。": " 識別到有效的 .app 路徑，跳過重新簽名。",
-        "[探测] 成功自动识别到 Antigravity 安装目录: ": "[偵測] 成功自動識別到 Antigravity 安裝目錄: ",
-        "[错误] 未找到默认安装目录，请使用 --install-dir 手动指定您的安装路径！": "[錯誤] 未找到預設安裝目錄，請使用 --install-dir 手動指定您的安裝路徑！",
-        "[!] 未找到 1.0 备份文件。": "[!] 未找到 1.0 備份檔案。",
-        "详情: ": "詳情: ",
-        "[√] 注入成功: ": "[√] 注入成功: ",
-        "[跳过] 检测到 --no-kill 参数，跳过关闭 Antigravity 运行进程。": "[跳過] 偵測到 --no-kill 參數，跳過關閉 Antigravity 執行進程。",
-        "[启动] 检测到安装前反重力客户端处于开启状态，正在重新启动客户端...": "[啟動] 偵測到安裝前反重力用戶端處於開啟狀態，正在重新啟動用戶端...",
-        "[启动] 客户端启动成功！": "[啟動] 用戶端啟動成功！",
-        "[警告] 未找到客户端主程序: ": "[警告] 未找到用戶端主程式: ",
-        "[警告] 客户端启动失败: ": "[警告] 用戶端啟動失敗: "
-    };
-    const translateMsg = (args) => {
-        return args.map(arg => {
-            if (typeof arg === 'string') {
-                let res = arg;
-                for (const [k, v] of Object.entries(logTranslations)) {
-                    if (res.includes(k)) {
-                        res = res.split(k).join(v);
-                    }
-                }
-                return res;
-            }
-            return arg;
-        });
-    };
-    const origLog = console.log;
-    const origError = console.error;
-    const origWarn = console.warn;
-    console.log = (...args) => origLog(...translateMsg(args));
-    console.error = (...args) => origError(...translateMsg(args));
-    console.warn = (...args) => origWarn(...translateMsg(args));
-}
-
 const SIGNATURE_START = "/* --- ANTIGRAVITY CHINESE LOCALIZATION START --- */";
 const SIGNATURE_END = "/* --- ANTIGRAVITY CHINESE LOCALIZATION END --- */";
 
@@ -287,56 +208,56 @@ function generateJs() {
                     newVal = lowerMap.get(valLower);
                 } else if (/^Refreshes in (\\d+) days?, (\\d+) hours?$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Refreshes in (\\d+) days?, (\\d+) hours?$/i, (match, d, h) => {
-                        return ${USE_TW ? 'd + " 天 " + h + " 小時後更新"' : 'd + " 天 " + h + " 小时后刷新"'};
+                        return ${false ? 'd + " 天 " + h + " 小時後更新"' : 'd + " 天 " + h + " 小时后刷新"'};
                     });
                 } else if (/^Refreshes in (\\d+) hours?, (\\d+) minutes?$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Refreshes in (\\d+) hours?, (\\d+) minutes?$/i, (match, h, m) => {
-                        return ${USE_TW ? 'h + " 小時 " + m + " 分鐘後更新"' : 'h + " 小时 " + m + " 分钟后刷新"'};
+                        return ${false ? 'h + " 小時 " + m + " 分鐘後更新"' : 'h + " 小时 " + m + " 分钟后刷新"'};
                     });
                 } else if (/^Refreshes in (\\d+) days?$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Refreshes in (\\d+) days?$/i, (match, d) => {
-                        return ${USE_TW ? 'd + " 天後更新"' : 'd + " 天后刷新"'};
+                        return ${false ? 'd + " 天後更新"' : 'd + " 天后刷新"'};
                     });
                 } else if (/^Refreshes in (\\d+) hours?$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Refreshes in (\\d+) hours?$/i, (match, h) => {
-                        return ${USE_TW ? 'h + " 小時後更新"' : 'h + " 小时后刷新"'};
+                        return ${false ? 'h + " 小時後更新"' : 'h + " 小时后刷新"'};
                     });
                 } else if (/^Refreshes in (\\d+) minutes?$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Refreshes in (\\d+) minutes?$/i, (match, m) => {
-                        return ${USE_TW ? 'm + " 分鐘後更新"' : 'm + " 分钟后刷新"'};
+                        return ${false ? 'm + " 分鐘後更新"' : 'm + " 分钟后刷新"'};
                     });
                 } else if (/^Learn more about (.+)$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Learn more about (.+)$/i, (match, p) => {
                         let translatedPreset = p;
-                        if (p.toLowerCase() === 'default') translatedPreset = ${USE_TW ? '"預設 (Default)"' : '"默认 (Default)"'};
-                        else if (p.toLowerCase() === 'full machine') translatedPreset = ${USE_TW ? '"全機存取 (Full Machine)"' : '"全机访问 (Full Machine)"'};
-                        else if (p.toLowerCase() === 'turbo mode') translatedPreset = ${USE_TW ? '"極速模式 (Turbo Mode)"' : '"极速模式 (Turbo Mode)"'};
-                        else if (p.toLowerCase() === 'custom') translatedPreset = ${USE_TW ? '"自訂 (Custom)"' : '"自定义 (Custom)"'};
-                        return ${USE_TW ? '"瞭解更多關於 " + translatedPreset + " 的詳細資訊"' : '"了解更多关于 " + translatedPreset + " 的信息"'};
+                        if (p.toLowerCase() === 'default') translatedPreset = ${false ? '"預設 (Default)"' : '"默认 (Default)"'};
+                        else if (p.toLowerCase() === 'full machine') translatedPreset = ${false ? '"全機存取 (Full Machine)"' : '"全机访问 (Full Machine)"'};
+                        else if (p.toLowerCase() === 'turbo mode') translatedPreset = ${false ? '"極速模式 (Turbo Mode)"' : '"极速模式 (Turbo Mode)"'};
+                        else if (p.toLowerCase() === 'custom') translatedPreset = ${false ? '"自訂 (Custom)"' : '"自定义 (Custom)"'};
+                        return ${false ? '"瞭解更多關於 " + translatedPreset + " 的詳細資訊"' : '"了解更多关于 " + translatedPreset + " 的信息"'};
                     });
                 } else if (/^Yes, and always allow '(.+)' in this project$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Yes, and always allow '(.+)' in this project$/i, (match, cmd) => {
-                        return ${USE_TW ? '"是，且在此專案中一律允許執行 \'" + cmd + "\'"' : '"是，且在此项目中始终允许运行 \'" + cmd + "\'"'};
+                        return ${false ? '"是，且在此專案中一律允許執行 \'" + cmd + "\'"' : '"是，且在此项目中始终允许运行 \'" + cmd + "\'"'};
                     });
                 } else if (/^Yes, and always allow '(.+)'$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Yes, and always allow '(.+)'$/i, (match, cmd) => {
-                        return ${USE_TW ? '"是，且一律允許執行 \'" + cmd + "\'"' : '"是，且始终允许运行 \'" + cmd + "\'"'};
+                        return ${false ? '"是，且一律允許執行 \'" + cmd + "\'"' : '"是，且始终允许运行 \'" + cmd + "\'"'};
                     });
                 } else if (/^(\\d+) tools? enabled$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^(\\d+) tools? enabled$/i, (match, num) => {
-                        return ${USE_TW ? 'num + " 個工具已啟用"' : 'num + " 个工具已启用"'};
+                        return ${false ? 'num + " 個工具已啟用"' : 'num + " 个工具已启用"'};
                     });
                 } else if (/^Show (\\d+) more(\\.\\.\\.|…)?$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Show (\\d+) more(\\.\\.\\.|…)?$/i, (match, num) => {
-                        return ${USE_TW ? '"顯示另外 " + num + " 個..."' : '"显示另外 " + num + " 个..."'};
+                        return ${false ? '"顯示另外 " + num + " 個..."' : '"显示另外 " + num + " 个..."'};
                     });
                 } else if (/^See all \\((\\d+)\\)$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^See all \\((\\d+)\\)$/i, (match, num) => {
-                        return ${USE_TW ? '"顯示全部 (" + num + ")"' : '"显示全部 (" + num + ")"'};
+                        return ${false ? '"顯示全部 (" + num + ")"' : '"显示全部 (" + num + ")"'};
                     });
                 } else if (/^Available AI Credits: (\\d+)$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Available AI Credits: (\\d+)$/i, (match, num) => {
-                        return ${USE_TW ? '"可用 AI 額度: " + num' : '"可用 AI 额度: " + num'};
+                        return ${false ? '"可用 AI 額度: " + num' : '"可用 AI 额度: " + num'};
                     });
                 } else if (/^Version\\s+([\\d\\.]+)$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Version\\s+([\\d\\.]+)$/i, (match, v) => {
@@ -346,26 +267,26 @@ function generateJs() {
                     newVal = valNorm.replace(/^(\\d+)(s|m|h|d|w|mo|yr)$/i, (match, num, unit) => {
                         const unitLower = unit.toLowerCase();
                         let unitStr = "";
-                        if (unitLower === "s") unitStr = ${USE_TW ? '"秒前"' : '"秒前"'};
-                        else if (unitLower === "m") unitStr = ${USE_TW ? '"分鐘前"' : '"分钟前"'};
-                        else if (unitLower === "h") unitStr = ${USE_TW ? '"小時前"' : '"小时前"'};
-                        else if (unitLower === "d") unitStr = ${USE_TW ? '"天前"' : '"天前"'};
-                        else if (unitLower === "w") unitStr = ${USE_TW ? '"週前"' : '"周前"'};
-                        else if (unitLower === "mo") unitStr = ${USE_TW ? '"個月前"' : '"个月前"'};
-                        else if (unitLower === "yr") unitStr = ${USE_TW ? '"年前"' : '"年前"'};
+                        if (unitLower === "s") unitStr = ${false ? '"秒前"' : '"秒前"'};
+                        else if (unitLower === "m") unitStr = ${false ? '"分鐘前"' : '"分钟前"'};
+                        else if (unitLower === "h") unitStr = ${false ? '"小時前"' : '"小时前"'};
+                        else if (unitLower === "d") unitStr = ${false ? '"天前"' : '"天前"'};
+                        else if (unitLower === "w") unitStr = ${false ? '"週前"' : '"周前"'};
+                        else if (unitLower === "mo") unitStr = ${false ? '"個月前"' : '"个月前"'};
+                        else if (unitLower === "yr") unitStr = ${false ? '"年前"' : '"年前"'};
                         return num + unitStr;
                     });
                 } else if (/^(.+?): context deadline exceeded$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^(.+?): context deadline exceeded$/i, (match, prefix) => {
-                        return prefix + ${USE_TW ? '": 請求超時 (context deadline exceeded)"' : '": 请求超时 (context deadline exceeded)"'};
+                        return prefix + ${false ? '": 請求超時 (context deadline exceeded)"' : '": 请求超时 (context deadline exceeded)"'};
                     });
                 } else if (/^(.+?): i\\/o timeout$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^(.+?): i\\/o timeout$/i, (match, prefix) => {
-                        return prefix + ${USE_TW ? '": I\\/O 超時 (i\\/o timeout)"' : '": I\\/O 超时 (i\\/o timeout)"'};
+                        return prefix + ${false ? '": I\\/O 超時 (i\\/o timeout)"' : '": I\\/O 超时 (i\\/o timeout)"'};
                     });
                 } else if (/^Are you sure you want to delete (the |this )?project (.+?)\\??$/i.test(valNorm)) {
                     newVal = valNorm.replace(/^Are you sure you want to delete (the |this )?project (.+?)\\??$/i, (match, article, name) => {
-                        return ${USE_TW ? '"您確定要刪除專案 " + name + " 嗎？"' : '"您确定要删除项目 " + name + " 吗？"'};
+                        return ${false ? '"您確定要刪除專案 " + name + " 嗎？"' : '"您确定要删除项目 " + name + " 吗？"'};
                     });
                 } else {
                     // 2. 长句子串滑动替换
@@ -691,7 +612,7 @@ function install20(resourcesDir) {
     // ==========================================
     // Antigravity Native Menu Chinese Translation
     // ==========================================
-    const translations = ${USE_TW ? `{
+    const translations = ${false ? `{
         'File': '檔案',
         'Edit': '編輯',
         'View': '檢視',
@@ -795,7 +716,7 @@ function install20(resourcesDir) {
         const targetCreate = "function createTray(actions) {";
         const replacementCreate = `function createTray(actions) {
     /* --- TRAY TRANSLATION START --- */
-    const translations = ${USE_TW ? `{
+    const translations = ${false ? `{
         'No agents running': '無執行中的智能體',
         'Open Antigravity': '開啟反重力智能編程',
         'Quit': '退出'
@@ -815,7 +736,7 @@ function install20(resourcesDir) {
         
         // 2. 使用正则替换 updateTrayAgentCount 里的动态显示文本
         const countRegex = /countItem\.label\s*=\s*\([\s\S]*?' running';/g;
-        const replacementCount = USE_TW 
+        const replacementCount = false 
             ? "countItem.label = count > 0 ? `${count} 個智能體執行中` : '無執行中的智能體';"
             : "countItem.label = count > 0 ? `${count} 个智能体运行中` : '无运行中的智能体';";
         trayPatched = trayPatched.replace(countRegex, replacementCount);
@@ -831,7 +752,7 @@ function install20(resourcesDir) {
         let loadingContent = fs.readFileSync(loadingPath, 'utf-8');
         
         const targetText = '<div class="text">Loading Antigravity</div>';
-        const replacementText = USE_TW
+        const replacementText = false
             ? '<div class="text">反重力引擎已啟動，正在努力擺脫地心引力...</div>'
             : '<div class="text">反重力引擎已启动，正在努力摆脱地心引力...</div>';
         
@@ -851,7 +772,7 @@ function install20(resourcesDir) {
         const targetOptions = `                title: 'Check for Updates',
                 message: 'No updates available',
                 buttons: ['OK'],`;
-        const replacementOptions = USE_TW
+        const replacementOptions = false
             ? `                title: '檢查更新',
                 message: '暫無可用更新',
                 buttons: ['確定'],`
